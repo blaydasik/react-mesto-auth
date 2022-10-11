@@ -5,7 +5,7 @@ import { CurrentUserContext } from "../contexts/CurrentUserContext";
 function Main(props) {
 
   //подпишемся на контекст текущего пользователя
-  const currentUser = React.useContext(CurrentUserContext);
+  const currentUser = React.useContext(CurrentUserContext).currentUser;
 
   return (
     <main className="content">

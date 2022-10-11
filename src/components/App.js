@@ -1,15 +1,21 @@
 import '../index.css';
+
+import { useEffect, useState } from "react";
+import { Routes, Route } from "react-router-dom";
+
 import Header from './Header';
 import Main from './Main';
 import ImagePopup from './ImagePopup';
 import Footer from './Footer';
-import { useEffect, useState } from "react";
-import workingApi from '../utils/Api';
-import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
 import ConfirmDeletePopup from './ConfirmDeletePopup';
+import ProtectedRoute from './ProtectedRoute';
+
+import workingApi from '../utils/Api';
+
+import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
 function App() {
 
@@ -23,6 +29,7 @@ function App() {
   const [currentUser, setCurrentUser] = useState({});
   const [cards, setCards] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
 
   //переменная, отслеживающая состояние открытости любого из попапов
   const isOpen = isEditAvatarPopupOpen || isEditProfilePopupOpen || isAddPlacePopupOpen || isConfirmDeletePopupOpen || isImagePopupOpen;
@@ -159,22 +166,44 @@ function App() {
         document.removeEventListener('keydown', closeByEscape);
       }
     }
-  }, [isOpen])//отслеживаем откртыия и закрытия попапов
+  }, [isOpen])//отслеживаем открытия и закрытия попапов
 
   return (
     <div className="page">
 
-      <CurrentUserContext.Provider value={currentUser}>
+      <CurrentUserContext.Provider value={{ currentUser: currentUser, loggedIn: loggedIn }}>
+
         <Header />
-        <Main
-          onEditProfile={handleEditProfileClick}
-          onAddPlace={handleAddPlaceClick}
-          onEditAvatar={handleEditAvatarClick}
-          onCardClick={handleCardClick}
-          onConfirmDelete={handleConfirmDeleteClick}
-          cards={cards}
-          onCardLike={handleCardLike}
-        />
+
+        <Routes>
+
+          <Route
+            exact path="/"
+            element={
+              <ProtectedRoute
+                component={Main}
+                onEditProfile={handleEditProfileClick}
+                onAddPlace={handleAddPlaceClick}
+                onEditAvatar={handleEditAvatarClick}
+                onCardClick={handleCardClick}
+                onConfirmDelete={handleConfirmDeleteClick}
+                cards={cards}
+                onCardLike={handleCardLike}
+              />
+            }
+          />
+
+          <Route
+            path="/sign-in"
+            element={
+              <Login
+                handleLogin={handleLogin}
+              />
+            }
+          />
+
+        </Routes>
+
         <Footer />
 
         <EditProfilePopup

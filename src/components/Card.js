@@ -16,7 +16,7 @@ function Card(props) {
   }
 
   //подпишемся на контекст текущего пользователя
-  const currentUser = React.useContext(CurrentUserContext);
+  const currentUser = React.useContext(CurrentUserContext).currentUser;
 
   //определим, является ли текущий пользователь владельцем карточки
   const isOwn = props.card.owner._id === currentUser._id;
