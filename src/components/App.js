@@ -12,6 +12,7 @@ import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
 import ConfirmDeletePopup from './ConfirmDeletePopup';
 import ProtectedRoute from './ProtectedRoute';
+import Login from './Login.js';
 
 import workingApi from '../utils/Api';
 
@@ -196,9 +197,7 @@ function App() {
           <Route
             path="/sign-in"
             element={
-              <Login
-                handleLogin={handleLogin}
-              />
+              <Login />
             }
           />
 
