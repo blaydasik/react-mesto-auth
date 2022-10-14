@@ -6,6 +6,7 @@
 //inactiveButtonClass - модификатор для неактивного состояния кнопки submit
 //inputErrorClass - модификатор для невалидного состояния iтput
 //errorClass - модификатор для активного состояния ошибки
+//spanClass - общий класс для span, выводящих ошибку
 
 export class FormValidator {
 
@@ -21,10 +22,8 @@ export class FormValidator {
   //метод, отображающий сообщение об ошибке
   _showErrorMessage(inputsItem) {
      //определим span для выведения ошибки
-    const str = '.account__error' + `${inputsItem.id}`.slice(5);
+    const str = `.${this._validationSettings.spanClass}` + `${inputsItem.id}`.slice(5);
     const errorItem = this._validatingForm.querySelector(str);
-  console.log(str)
-  console.log(errorItem)
     //подсветим input с ошибкой
     inputsItem.classList.add(this._validationSettings.inputErrorClass);
     //запишем текст ошибки в span
@@ -36,7 +35,7 @@ export class FormValidator {
   //метод, скрывающий сообщение об ошибки
   _hideErrorMessage(inputsItem) {
     //определим span, отображающий ошибку
-    const str = '.account__error' + `${inputsItem.id}`.slice(5);
+    const str = `.${this._validationSettings.spanClass}` + `${inputsItem.id}`.slice(5);
     const errorItem = this._validatingForm.querySelector(str);
     //уберем подсветку input с ошибкой
     inputsItem.classList.remove(this._validationSettings.inputErrorClass);
@@ -80,7 +79,6 @@ export class FormValidator {
   //метод, устанавливающий обработчики
   _setEventListener() {    
     //навесим обработчики на ввод в inputs  
-console.log(this._inputs)
     this._inputs.forEach((inputsItem) => {
       inputsItem.addEventListener('input', () => {
         //отобразим или скроем ошибку на основании валидности input

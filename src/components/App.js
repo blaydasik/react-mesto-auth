@@ -1,7 +1,7 @@
 import '../index.css';
 
 import { useEffect, useState } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 import Header from './Header';
 import Main from './Main';
@@ -13,6 +13,7 @@ import AddPlacePopup from './AddPlacePopup';
 import ConfirmDeletePopup from './ConfirmDeletePopup';
 import ProtectedRoute from './ProtectedRoute';
 import Login from './Login.js';
+import Register from './Register';
 
 import workingApi from '../utils/Api';
 
@@ -135,6 +136,16 @@ function App() {
       .finally(() => setIsLoading(false));
   }
 
+  //обработчик залогинивания
+  function handleLogin(account) {
+    console.log(account)
+  }
+
+  //обработчик залогинивания
+  function handleRegistration(account) {
+    console.log(account)
+  }
+
   //эффект при монтировании компонента
   useEffect(() => {
     //загружаем информацию о пользователе
@@ -194,10 +205,33 @@ function App() {
             }
           />
 
+          (//вход в аккаунт)
           <Route
             path="/sign-in"
             element={
-              <Login />
+              <Login
+                isLoading={isLoading}
+                onSubmit={handleLogin}
+              />
+            }
+          />
+
+          (//регистрация аккаунта)
+          <Route
+            path="/sign-up"
+            element={
+              <Register
+                isLoading={isLoading}
+                onSubmit={handleRegistration}
+              />
+            }
+          />
+
+          (//перенаправление всех других роутов)
+          <Route
+            path="*"
+            element={
+              loggedIn ? <Navigate to="/" /> : <Navigate to="/sign-in" />
             }
           />
 

@@ -6,24 +6,27 @@
 //inactiveButtonClass - модификатор для неактивного состояния кнопки submit
 //inputErrorClass - модификатор для невалидного состояния iтput
 //errorClass - модификатор для активного состояния ошибки
-/* export const validationSettings = {
+//spanClass - общий класс для span, выводящих ошибку
+export const validationSettingsForPopup = {
   formSelector: '.popup__form',
   fieldsetSelector: '.popup__fieldset',
   inputSelector: '.popup__input',
   submitButtonSelector: '.popup__button-save',
   inactiveButtonClass: 'popup__button-save_disabled',
   inputErrorClass: 'popup__input_type_error',
-  errorClass: 'popup__error_visible'
-}; */
+  errorClass: 'popup__error_visible',
+  spanClass: 'popup__error'
+};
 
-export const validationSettings = {
+export const validationSettingsForAccount = {
   formSelector: '.account__form',
   fieldsetSelector: '.account__fieldset',
   inputSelector: '.account__input',
   submitButtonSelector: '.account__button-submit',
-  inactiveButtonClass: 'popup__button-save_disabled',
-  inputErrorClass: 'popup__input_type_error',
-  errorClass: 'popup__error_visible'
+  inactiveButtonClass: 'account__button-save_disabled',
+  inputErrorClass: 'account__input_type_error',
+  errorClass: 'account__error_visible',
+  spanClass: 'account__error'
 };
 
 //параметры для запросов к серверу

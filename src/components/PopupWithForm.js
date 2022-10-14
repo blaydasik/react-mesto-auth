@@ -1,5 +1,5 @@
 import { FormValidator } from "./FormValidator";
-import { validationSettings } from '../utils/constants.js';
+import { validationSettingsForPopup } from '../utils/constants.js';
 import React from "react";
 
 function PopupWithForm({ isOpen, onClose, name, title, textOnButton, children, onSubmit }) {
@@ -10,7 +10,7 @@ function PopupWithForm({ isOpen, onClose, name, title, textOnButton, children, o
 
   //активируем валидацию единожды
   React.useEffect(() => {
-    validatorRef.current = new FormValidator(validationSettings, formRef.current);
+    validatorRef.current = new FormValidator(validationSettingsForPopup, formRef.current);
     validatorRef.current.enableValidation();
   }, []);
 
