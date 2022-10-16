@@ -1,7 +1,7 @@
 import '../index.css';
 
 import { useEffect, useState } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 
 import Header from './Header';
 import Main from './Main';
@@ -14,8 +14,10 @@ import ConfirmDeletePopup from './ConfirmDeletePopup';
 import ProtectedRoute from './ProtectedRoute';
 import Login from './Login.js';
 import Register from './Register';
+import InfoTooltip from './InfoTooltip';
 
-import workingApi from '../utils/Api';
+import workingApi from '../utils/api';
+import * as auth from '../utils/auth';
 
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
@@ -27,14 +29,20 @@ function App() {
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
   const [isImagePopupOpen, setIsImagePopupOpen] = useState(false);
   const [isConfirmDeletePopupOpen, setIsConfirmDeletePopupOpen] = useState(false);
+  const [isInfoTooltipPopupOpen, setIsInfoTooltipPopupOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState({});
   const [currentUser, setCurrentUser] = useState({});
   const [cards, setCards] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
+  const [email, setEmail] = useState("");
+  //определяет успешно ли прошел процесс авторизации/регистрации
+  const [isSuccess, setIsSucess] = useState("");
 
   //переменная, отслеживающая состояние открытости любого из попапов
-  const isOpen = isEditAvatarPopupOpen || isEditProfilePopupOpen || isAddPlacePopupOpen || isConfirmDeletePopupOpen || isImagePopupOpen;
+  const isOpen = isEditAvatarPopupOpen || isEditProfilePopupOpen || isAddPlacePopupOpen || isConfirmDeletePopupOpen || isImagePopupOpen || isInfoTooltipPopupOpen;
+
+  const navigate = useNavigate();
 
   //обработчики открытия попапов
   function handleEditAvatarClick() {
@@ -54,6 +62,10 @@ function App() {
     setIsConfirmDeletePopupOpen(true);
   }
 
+  function handleInfoTooltip() {
+    setIsInfoTooltipPopupOpen(true);
+  }
+
   //обработчик закрытия попапов
   function closeAllPopups() {
     setIsEditAvatarPopupOpen(false);
@@ -61,6 +73,7 @@ function App() {
     setIsAddPlacePopupOpen(false);
     setIsConfirmDeletePopupOpen(false);
     setIsImagePopupOpen(false);
+    setIsInfoTooltipPopupOpen(false);
     setSelectedCard({});
   }
 
@@ -137,14 +150,81 @@ function App() {
   }
 
   //обработчик залогинивания
-  function handleLogin(account) {
-    console.log(account)
+  function onLogin(account, setValues) {
+    setIsLoading(true);
+    auth
+      .login(account)
+      .then((userData) => {
+        //проверим, что токен получен
+        if (userData.token) {
+          //сохраним токен в локальном хранилище
+          localStorage.setItem("jwt", userData.token);
+          setLoggedIn(true);
+          //при успешной авторизации переходим на главную страницу
+          navigate("/");
+          setValues();
+        }
+      })
+      .catch((err) => {
+        setIsSucess(false);
+        proceedError(err);
+        handleInfoTooltip();
+      })
+      .finally(() => {
+        setIsLoading(false);        
+      });
   }
 
-  //обработчик залогинивания
+  //обработчик регистрации
   function handleRegistration(account) {
-    console.log(account)
+    setIsLoading(true);
+    auth
+      .register(account)
+      .then((userData) => {
+        setIsSucess(true);
+        //при успешной регистрации переходим на страницу авторизации
+        navigate("/sign-in");
+      })
+      .catch((err) => {
+        setIsSucess(false);
+        proceedError(err);
+      })
+      .finally(() => {
+        setIsLoading(false);
+        handleInfoTooltip();
+      });
   }
+
+  //обработчик выхода из аккаунта
+  function onSignOut() {
+    //удаляем токен
+    localStorage.removeItem("jwt");
+    //перейдем на страницу входа
+    navigate("/sign-in");
+    setLoggedIn(false);
+    setEmail("");
+  }
+
+  //эффект при загрузке страницы для проверки наличия валидного токена в локальном хранилище
+  useEffect(() => {
+    const jwt = localStorage.getItem("jwt");
+    if (jwt) {
+      auth
+        .checkToken(jwt)
+        .then((userData) => {
+          if (userData) {//авторизуем пользователя
+            setEmail(userData.data.email);
+            setLoggedIn(true);
+            //при успешной авторизации переходим на главную страницу
+            navigate("/");
+          }
+        })
+        .catch((err) => {
+          setLoggedIn(false);
+          proceedError(err);
+        })
+    }
+  }, [loggedIn])
 
   //эффект при монтировании компонента
   useEffect(() => {
@@ -185,7 +265,10 @@ function App() {
 
       <CurrentUserContext.Provider value={{ currentUser: currentUser, loggedIn: loggedIn }}>
 
-        <Header />
+        <Header
+          email={email}
+          onSignOut={onSignOut}
+        />
 
         <Routes>
 
@@ -211,7 +294,7 @@ function App() {
             element={
               <Login
                 isLoading={isLoading}
-                onSubmit={handleLogin}
+                onLogin={onLogin}
               />
             }
           />
@@ -222,7 +305,7 @@ function App() {
             element={
               <Register
                 isLoading={isLoading}
-                onSubmit={handleRegistration}
+                onRegister={handleRegistration}
               />
             }
           />
@@ -271,6 +354,12 @@ function App() {
           onClose={closeAllPopups}
           onUpdateAvatar={handleUpdateAvatar}
           isLoading={isLoading}
+        />
+
+        <InfoTooltip
+          isOpen={isInfoTooltipPopupOpen}
+          onClose={closeAllPopups}
+          isSuccess={isSuccess}
         />
 
       </CurrentUserContext.Provider>

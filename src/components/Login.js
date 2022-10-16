@@ -1,15 +1,15 @@
 import Account from "./Account";
 
-function Login({ onSubmit, isLoading }) {
-
+function Login({ onLogin, isLoading }) {
+  
   return (
     <Account
       name="login"
       title="Вход"
       textOnButton={isLoading ? 'Осуществляется вход...' : 'Войти'}
-      onSubmit={onSubmit}
+      onSubmit={onLogin}
       withText={false}
-    />
+    />    
   );
 }
 

@@ -2,14 +2,14 @@ import Account from "./Account";
 
 import { Link } from "react-router-dom";
 
-function Register({ onSubmit, isLoading }) {
+function Register({ onRegister, isLoading }) {
 
   return (
     <Account
       name="register"
       title="Регистрация"
       textOnButton={isLoading ? 'Регистрация...' : 'Зарегистрироваться'}
-      onSubmit={onSubmit}
+      onSubmit={onRegister}
       withText={true}
     >
       <Link className="account__prompt" to="/sign-in">

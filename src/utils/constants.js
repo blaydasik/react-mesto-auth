@@ -37,3 +37,11 @@ export const apiSettings = {
     'Content-Type': 'application/json'
   }
 }
+
+//параметры для запросов к серверу
+export const authSettings = {
+  link: 'https://auth.nomoreparties.co',
+  headers: {
+    'Content-Type': 'application/json'
+  }
+}

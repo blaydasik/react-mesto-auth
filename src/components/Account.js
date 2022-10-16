@@ -10,12 +10,16 @@ function Account({ name, title, onSubmit, textOnButton, children, withText }) {
   const formRef = React.useRef();
   const validatorRef = React.useRef();
 
-  const { values, handleChange } = useForm({});
+  let { values, handleChange } = useForm({});
+
+  function clearForm() {
+    values=[];
+  }
 
   //обработчик submit
   function handleSubmit(evt) {
     evt.preventDefault();
-    onSubmit(values);
+    onSubmit(values, clearForm);
   }
 
   //активируем валидацию единожды
@@ -69,7 +73,6 @@ function Account({ name, title, onSubmit, textOnButton, children, withText }) {
       </form>
       {children}
     </div>
-
   );
 }
 
