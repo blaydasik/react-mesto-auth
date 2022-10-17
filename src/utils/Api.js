@@ -83,6 +83,6 @@ class Api {
 
 }
 
-//создадим класс для работы с Api
+//создадим экземпляр класса для работы с Api
 const workingApi = new Api(apiSettings);
 export default workingApi;
