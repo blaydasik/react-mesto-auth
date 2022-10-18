@@ -150,7 +150,7 @@ function App() {
   }
 
   //обработчик залогинивания
-  function onLogin(account, setValues) {
+  function onLogin(account) {
     setIsLoading(true);
     auth
       .login(account)
@@ -162,7 +162,7 @@ function App() {
           setLoggedIn(true);
           //при успешной авторизации переходим на главную страницу
           navigate("/");
-          setValues();
+          setIsSucess(true);
         }
       })
       .catch((err) => {
@@ -295,6 +295,7 @@ function App() {
               <Login
                 isLoading={isLoading}
                 onLogin={onLogin}
+                isSuccess={isSuccess}
               />
             }
           />
@@ -306,6 +307,7 @@ function App() {
               <Register
                 isLoading={isLoading}
                 onRegister={handleRegistration}
+                isSuccess={isSuccess}
               />
             }
           />

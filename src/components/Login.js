@@ -1,6 +1,6 @@
 import Account from "./Account";
 
-function Login({ onLogin, isLoading }) {
+function Login({ onLogin, isLoading, isSuccess }) {
   
   return (
     <Account
@@ -9,6 +9,7 @@ function Login({ onLogin, isLoading }) {
       textOnButton={isLoading ? 'Осуществляется вход...' : 'Войти'}
       onSubmit={onLogin}
       withText={false}
+      isSuccess={isSuccess}
     />    
   );
 }

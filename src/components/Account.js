@@ -4,22 +4,22 @@ import { useForm } from "../hooks/useForm";
 
 import React from "react";
 
-function Account({ name, title, onSubmit, textOnButton, children, withText }) {
+function Account({ name, title, onSubmit, textOnButton, children, withText, isSuccess }) {
 
   //используем рефы
   const formRef = React.useRef();
   const validatorRef = React.useRef();
 
-  let { values, handleChange } = useForm({});
+  const { values, handleChange, setValues } = useForm({});
 
-  function clearForm() {
-    values=[];
-  }
+  React.useEffect(() => {
+    console.log('cleaning '+isSuccess)
+  }, [isSuccess])
 
   //обработчик submit
   function handleSubmit(evt) {
     evt.preventDefault();
-    onSubmit(values, clearForm);
+    onSubmit(values);
   }
 
   //активируем валидацию единожды
