@@ -12,9 +12,10 @@ function Account({ name, title, onSubmit, textOnButton, children, withText, isSu
 
   const { values, handleChange, setValues } = useForm({});
 
+  //очистка полей формы при удачном запросе
   React.useEffect(() => {
-    console.log('cleaning '+isSuccess)
-  }, [isSuccess])
+    if(isSuccess) setValues([]);
+  }, [isSuccess, setValues])
 
   //обработчик submit
   function handleSubmit(evt) {

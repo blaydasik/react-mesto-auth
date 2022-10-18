@@ -1,5 +1,3 @@
-import '../index.css';
-
 import { useEffect, useState } from "react";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 
@@ -37,7 +35,7 @@ function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [email, setEmail] = useState("");
   //определяет успешно ли прошел процесс авторизации/регистрации
-  const [isSuccess, setIsSucess] = useState("");
+  const [isSuccess, setIsSucess] = useState(false);
 
   //переменная, отслеживающая состояние открытости любого из попапов
   const isOpen = isEditAvatarPopupOpen || isEditProfilePopupOpen || isAddPlacePopupOpen || isConfirmDeletePopupOpen || isImagePopupOpen || isInfoTooltipPopupOpen;
@@ -171,7 +169,7 @@ function App() {
         handleInfoTooltip();
       })
       .finally(() => {
-        setIsLoading(false);        
+        setIsLoading(false);
       });
   }
 
@@ -228,19 +226,21 @@ function App() {
 
   //эффект при монтировании компонента
   useEffect(() => {
-    //загружаем информацию о пользователе
-    workingApi.downloadUserInfo()
-      .then((userData) => {
-        setCurrentUser(userData);
-      })
-      .catch(proceedError);
-    //загружаем массив карточек
-    workingApi.downloadCards()
-      .then((cardsData) => {
-        setCards(cardsData);
-      })
-      .catch(proceedError);
-  }, []);
+    if (loggedIn) { //исключим лишние запросы, если пользователь не авторизован
+      //загружаем информацию о пользователе
+      workingApi.downloadUserInfo()
+        .then((userData) => {
+          setCurrentUser(userData);
+        })
+        .catch(proceedError);
+      //загружаем массив карточек
+      workingApi.downloadCards()
+        .then((cardsData) => {
+          setCards(cardsData);
+        })
+        .catch(proceedError);
+    }
+  }, [loggedIn]);
 
   //навешивание обработчика на нажатие клавиши Escape
   useEffect(() => {
