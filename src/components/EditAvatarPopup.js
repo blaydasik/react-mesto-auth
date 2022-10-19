@@ -1,10 +1,15 @@
 import PopupWithForm from './PopupWithForm';
 import React from "react";
+import { useState } from 'react';
 
 function EditAvatarPopup(props) {
 
   //используем реф
   const avatarRef = React.useRef();
+  const errorRef = React.useRef();
+
+  //переменная отвечающая за валидность инпутов
+  const [ isValid, setIsValid ] = useState(false);
 
   function handleSubmit(evt) {
     evt.preventDefault();
@@ -12,9 +17,15 @@ function EditAvatarPopup(props) {
     props.onUpdateAvatar(avatarRef.current.value);
   }
 
+  function checkValidity(evt) {
+    setIsValid(evt.target.closest('form').checkValidity());
+    errorRef.current.textContent = evt.target.validationMessage;    
+  }
+
   //очистка инпута при открытии
   React.useEffect(() => {
     avatarRef.current.value = '';
+    errorRef.current.textContent = '';
   }, [props.isOpen]);
 
   return (
@@ -25,9 +36,10 @@ function EditAvatarPopup(props) {
       isOpen={props.isOpen}
       onClose={props.onClose}
       onSubmit={handleSubmit}
+      isValid={isValid}
     >
-
       <label className="popup__label-field">
+
         <input
           className="popup__input popup__input_type_avatar"
           id="input_type_avatar"
@@ -35,9 +47,11 @@ function EditAvatarPopup(props) {
           type="url"
           name="avatar"
           ref={avatarRef}
+          onChange={checkValidity}
           required
         />
-        <span className="popup__error popup__error_type_avatar" id="input_type_avatar-error"></span>
+        <span className={`popup__error popup__error_type_avatar ${isValid ? "" : "popup__error_visible"}`}
+          id="input_type_avatar-error" ref={errorRef}></span>
 
       </label>
     </PopupWithForm>

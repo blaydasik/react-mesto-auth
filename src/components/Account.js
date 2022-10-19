@@ -1,21 +1,16 @@
-import { FormValidator } from "./FormValidator";
-import { validationSettingsForAccount } from '../utils/constants.js';
-import { useForm } from "../hooks/useForm";
+import { useFormAndValidation } from "../hooks/useForm"
 
 import React from "react";
 
 function Account({ name, title, onSubmit, textOnButton, children, withText, isSuccess }) {
 
-  //используем рефы
-  const formRef = React.useRef();
-  const validatorRef = React.useRef();
-
-  const { values, handleChange, setValues } = useForm({});
+  //подключим хук для валидации формы
+  const { values, handleChange, errors, isValid, resetForm } = useFormAndValidation();
 
   //очистка полей формы при удачном запросе
   React.useEffect(() => {
-    if(isSuccess) setValues([]);
-  }, [isSuccess, setValues])
+    if (isSuccess) resetForm();
+  }, [isSuccess, resetForm])
 
   //обработчик submit
   function handleSubmit(evt) {
@@ -23,24 +18,12 @@ function Account({ name, title, onSubmit, textOnButton, children, withText, isSu
     onSubmit(values);
   }
 
-  //активируем валидацию единожды
-  React.useEffect(() => {
-    validatorRef.current = new FormValidator(validationSettingsForAccount, formRef.current);
-    validatorRef.current.enableValidation();
-  }, []);
-
-  //провалидируем форму при загрузке страницы
-  React.useEffect(() => {
-    validatorRef.current.validateOnOpen();
-  }, []);
-
   return (
 
     <div className="account">
       <form className={`account__form account__form_type_${name}`}
         name={`account__form_type_${name}`}
-        onSubmit={handleSubmit}
-        ref={formRef}>
+        onSubmit={handleSubmit}>
         <h2 className={`account__title account__title_type_${name}`}>{title}</h2>
         <fieldset className="account__fieldset">
           <label className="account__label-field">
@@ -53,7 +36,8 @@ function Account({ name, title, onSubmit, textOnButton, children, withText, isSu
               onChange={handleChange}
               required
             />
-            <span className="account__error account__error_type_email" id="input_type_email-error"></span>
+            <span className={`account__error account__error_type_email ${isValid ? "" : "account__error_visible"}`}
+              id="input_type_email-error">{errors['email'] || ''}</span>
             <input className="account__input account__input_type_password"
               id="input_type_password"
               placeholder="Пароль"
@@ -65,9 +49,14 @@ function Account({ name, title, onSubmit, textOnButton, children, withText, isSu
               onChange={handleChange}
               required
             />
-            <span className="account__error account__error_type_password" id="input_type_password-error"></span>
+            <span className={`account__error account__error_type_password ${isValid ? "" : "account__error_visible"}`} 
+              id="input_type_password-error">{errors['password'] || ''}</span>
           </label>
-          <button className={`account__button-submit ${withText ? "account__button-submit_type_with-text" : ""}`} id={`account __button-${name}`} type="submit">
+          <button
+            className={`account__button-submit ${withText ? "account__button-submit_type_with-text" : ""}`}
+            id={`account __button-${name}`}
+            type="submit"
+            disabled={isValid ? "" : "disabled"}>
             {textOnButton}
           </button>
         </fieldset>

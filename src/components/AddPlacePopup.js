@@ -1,21 +1,24 @@
 import PopupWithForm from './PopupWithForm';
 import React from "react";
-import { useForm } from "../hooks/useForm";
+import { useFormAndValidation } from "../hooks/useForm";
 
 function AddPlacePopup(props) {
 
-  const { values, handleChange, setValues } = useForm({});
+  //подключим хук для валидации формы
+  const { values, setValues, handleChange, errors, isValid, resetForm } = useFormAndValidation();
 
   //обработчик
   function handleSubmit(evt) {
     evt.preventDefault();
+    console.log(values)
     props.onAddPlace(values);
   }
 
   //очистка инпутов при открытии
   React.useEffect(() => {
     setValues({});
-  }, [props.isOpen, setValues]);
+    resetForm();
+  }, [props.isOpen, setValues, resetForm]);
 
   return (
     <PopupWithForm
@@ -25,6 +28,7 @@ function AddPlacePopup(props) {
       isOpen={props.isOpen}
       onClose={props.onClose}
       onSubmit={handleSubmit}
+      isValid={isValid}
     >
 
       <label className="popup__label-field">
@@ -39,7 +43,8 @@ function AddPlacePopup(props) {
           value={values['name'] || ''}
           onChange={handleChange}
           required />
-        <span className="popup__error popup__error_type_title" id="input_type_title-error"></span>
+        <span className={`popup__error popup__error_type_title ${isValid ? "" : "popup__error_visible"}`}
+          id="input_type_title-error">{errors['name'] || ''}</span>
         <input className="popup__input popup__input_type_link"
           id="input_type_link"
           placeholder="Ссылка на картинку"
@@ -48,7 +53,8 @@ function AddPlacePopup(props) {
           value={values['link'] || ''}
           onChange={handleChange}
           required />
-        <span className="popup__error popup__error_type_link" id="input_type_link-error"></span>
+        <span className={`popup__error popup__error_type_link ${isValid ? "" : "popup__error_visible"}`}
+          id="input_type_link-error">{errors['link'] || ''}</span>
       </label>
 
     </PopupWithForm>
