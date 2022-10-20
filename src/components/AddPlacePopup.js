@@ -43,7 +43,7 @@ function AddPlacePopup(props) {
           value={values['name'] || ''}
           onChange={handleChange}
           required />
-        <span className={`popup__error popup__error_type_title ${isValid ? "" : "popup__error_visible"}`}
+        <span className={`popup__error popup__error_type_title  ${(!isValid && props.isOpen) ? "popup__error_visible" : ""}`}
           id="input_type_title-error">{errors['name'] || ''}</span>
         <input className="popup__input popup__input_type_link"
           id="input_type_link"
@@ -53,7 +53,7 @@ function AddPlacePopup(props) {
           value={values['link'] || ''}
           onChange={handleChange}
           required />
-        <span className={`popup__error popup__error_type_link ${isValid ? "" : "popup__error_visible"}`}
+        <span className={`popup__error popup__error_type_link ${(!isValid && props.isOpen) ? "popup__error_visible" : ""}`}
           id="input_type_link-error">{errors['link'] || ''}</span>
       </label>
 

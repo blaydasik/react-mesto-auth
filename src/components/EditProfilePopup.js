@@ -47,7 +47,7 @@ function EditProfilePopup(props) {
           onChange={handleChange}
           required
         />
-        <span className={`popup__error popup__error_type_name ${isValid ? "" : "popup__error_visible"}`}
+        <span className={`popup__error popup__error_type_name ${(!isValid && props.isOpen) ? "popup__error_visible" : ""}`}
           id="input_type_name-error">{errors['name'] || ''}</span>
         <input className="popup__input popup__input_type_about"
           id="input_type_about"
@@ -60,7 +60,7 @@ function EditProfilePopup(props) {
           onChange={handleChange}
           required
         />
-        <span className={`popup__error popup__error_type_about ${isValid ? "" : "popup__error_visible"}`}
+        <span className={`popup__error popup__error_type_about ${(!isValid && props.isOpen) ? "popup__error_visible" : ""}`}
           id="input_type_about-error">{errors['about'] || ''}</span>
       </label>
 

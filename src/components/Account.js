@@ -2,7 +2,7 @@ import { useFormAndValidation } from "../hooks/useForm"
 
 import React from "react";
 
-function Account({ name, title, onSubmit, textOnButton, children, withText, isSuccess }) {
+function Account({ name, title, onSubmit, textOnButton, children, withText, isSuccess, isOpen }) {
 
   //подключим хук для валидации формы
   const { values, handleChange, errors, isValid, resetForm } = useFormAndValidation();
@@ -36,7 +36,7 @@ function Account({ name, title, onSubmit, textOnButton, children, withText, isSu
               onChange={handleChange}
               required
             />
-            <span className={`account__error account__error_type_email ${isValid ? "" : "account__error_visible"}`}
+            <span className={`account__error account__error_type_email ${(!isValid) ? "account__error_visible" : ""}`}
               id="input_type_email-error">{errors['email'] || ''}</span>
             <input className="account__input account__input_type_password"
               id="input_type_password"
@@ -49,7 +49,7 @@ function Account({ name, title, onSubmit, textOnButton, children, withText, isSu
               onChange={handleChange}
               required
             />
-            <span className={`account__error account__error_type_password ${isValid ? "" : "account__error_visible"}`} 
+            <span className={`account__error account__error_type_password  ${(!isValid) ? "account__error_visible" : ""}`} 
               id="input_type_password-error">{errors['password'] || ''}</span>
           </label>
           <button
